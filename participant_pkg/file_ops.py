@@ -1,16 +1,34 @@
-import csv
 from pathlib import Path
-
-
-def save_participant(filepath: Path, participant: list):
+import csv
+def save_participant(path, participant_dict):
     """
-    Appends a participant's details to a CSV file.
+    Appends participant details to a CSV file.
     If the file does not exist, creates it and writes a header row.
     """
-    with open(filepath, 'a', newline='', encoding='utf-8') as csvfile:
+    path = Path(path)
+    file_exists = path.exists()
+    with path.open('a', newline='', encoding='utf-8') as csvfile:
         fieldnames = ['Name', 'Age', 'Phone', 'Track']
-        filepath.exists()
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
-        if csvfile.tell() == 0:  # Check if file is empty
+        if not file_exists:
             writer.writeheader()
-        writer.writerow(participant)
+        writer.writerow(participant_dict)
+def load_participants(path):
+    """
+    Reads all participants from the CSV and returns them as a list of dictionaries.
+    """
+    path = Path(path)
+    participants = []
+    if path.exists():
+        with path.open('r', newline='', encoding='utf-8') as csvfile:
+            reader = csv.DictReader(csvfile)
+            for row in reader:
+                participants.append(row)
+    return participants
+
+
+
+
+
+
+
